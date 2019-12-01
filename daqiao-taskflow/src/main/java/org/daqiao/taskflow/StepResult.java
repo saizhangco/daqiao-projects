@@ -1,0 +1,18 @@
+package org.daqiao.taskflow;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+/**
+ * @Author : saizhang
+ * @Date : 2019/12/01
+ * @Time : 17:45
+ * @Description : TODO
+ */
+@Data
+@AllArgsConstructor
+public class StepResult {
+    private boolean isContinue;
+    private String stepName;
+    private String stepResult;
+}
