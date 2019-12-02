@@ -1,7 +1,8 @@
 package org.daqiao.taskflow;
 
-import org.daqiao.entity.TaskRecord;
-import org.daqiao.entity.TaskStepRecord;
+import org.daqiao.model.TaskRecord;
+import org.daqiao.model.TaskStepRecord;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,21 @@ public class TaskRepository {
     private ApplicationContext applicationContext;
 
     @PostConstruct
-    public void initTaskCallback() {
+    public void init() {
+        initTaskStep();
+        initTaskCallback();
+    }
+
+    private void initTaskStep() {
+        Map<String, TaskStepSet> map = applicationContext.getBeansOfType(TaskStepSet.class);
+        for( Map.Entry<String, TaskStepSet> entry : map.entrySet() ) {
+            String className = entry.getValue().getClass().getName();
+            classMap.put(className, entry.getValue());
+            addMethodToMap(className, entry.getValue());
+        }
+    }
+
+    private void initTaskCallback() {
         Map<String, TaskCallback> map = applicationContext.getBeansOfType(TaskCallback.class);
         Set<Class<? extends TaskCallback>> set = new HashSet<>();
         // 去重
@@ -34,14 +49,8 @@ public class TaskRepository {
             set.add(entry.getValue().getClass());
         }
         for( Class<? extends TaskCallback> clazz : set ) {
-            try {
-                Object object = clazz.newInstance();
-                callbackList.add((TaskCallback) object);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            }
+            TaskCallback taskCallback = applicationContext.getBean(clazz);
+            callbackList.add(taskCallback);
         }
     }
 
@@ -94,22 +103,25 @@ public class TaskRepository {
         // 如果object为空，则再实例化一次，并放到map中
         if (object == null) {
             try {
-                object = Class.forName(className).newInstance();
-            } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+                object = applicationContext.getBean(className);
+            } catch (BeansException e) {
                 e.printStackTrace();
             }
-            TaskStepSet taskStepSet = object.getClass().getAnnotation(TaskStepSet.class);
-            if( object != null && object.getClass().getAnnotation(TaskStepSet.class) != null) {
+            if( object != null && object instanceof TaskStepSet) {
                 classMap.put(className, object);
-                Method[] methods = object.getClass().getMethods();
-                for( Method method : methods ) {
-                    if( method.getAnnotation(TaskStepMethod.class) != null ) {
-                        String methodName = method.getName();
-                        methodMap.put(className + ":" + methodName, method);
-                    }
-                }
+                addMethodToMap(className, object);
             }
         }
         return classMap.get(className);
+    }
+
+    private void addMethodToMap(String className, Object object) {
+        Method[] methods = object.getClass().getMethods();
+        for( Method method : methods ) {
+            if( method.getAnnotation(TaskStepMethod.class) != null ) {
+                String methodName = method.getName();
+                methodMap.put(className + ":" + methodName, method);
+            }
+        }
     }
 }

@@ -1,5 +1,7 @@
 package org.daqiao.taskflow;
 
+import org.springframework.stereotype.Component;
+
 import java.lang.annotation.*;
 
 /**
@@ -8,8 +10,5 @@ import java.lang.annotation.*;
  * @Time : 17:17
  * @Description : TODO
  */
-@Target({ElementType.TYPE})
-@Retention(RetentionPolicy.RUNTIME)
-@Documented
-public @interface TaskStepSet {
+public interface TaskStepSet {
 }

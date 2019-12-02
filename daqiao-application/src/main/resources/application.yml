@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://127.0.0.1/task?useUnicode=yes&characterEncoding=UTF-8
+    username: root
+    password: Rhs$1234
+    sql-script-encoding: UTF-8
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    show-sql: true
+    database: mysql
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL57Dialect

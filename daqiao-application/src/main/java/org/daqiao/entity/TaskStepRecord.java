@@ -2,18 +2,24 @@ package org.daqiao.entity;
 
 import lombok.Data;
 
+import javax.persistence.*;
+
 /**
  * @Author : saizhang
- * @Date : 2019/12/01
- * @Time : 18:00
+ * @Date : 2019/12/02
+ * @Time : 20:52
  * @Description : TODO
  */
+@Entity
+@Table(name = "t_task_step_record")
 @Data
 public class TaskStepRecord {
     /**
      * 编号
      */
-    private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     /**
      * 任务编号
      */

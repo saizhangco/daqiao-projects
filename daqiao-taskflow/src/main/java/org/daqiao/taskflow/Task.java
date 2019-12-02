@@ -1,9 +1,8 @@
 package org.daqiao.taskflow;
 
-import org.daqiao.entity.TaskRecord;
-import org.daqiao.entity.TaskStepRecord;
+import org.daqiao.model.TaskRecord;
+import org.daqiao.model.TaskStepRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -19,7 +18,7 @@ import java.util.UUID;
  * @Author : saizhang
  * @Date : 2019/12/01
  * @Time : 17:49
- * @Description : TODO
+ * @Description : 任务核心类
  */
 @Component
 @Scope("prototype")
@@ -31,9 +30,6 @@ public class Task {
 
   @Autowired
   private TaskRepository taskRepository;
-
-  @Autowired
-  private ApplicationContext applicationContext;
 
   public void addTask(String step) {
       if (allowAddTask) {
