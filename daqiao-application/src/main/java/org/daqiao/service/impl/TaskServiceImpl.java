@@ -7,6 +7,7 @@ import org.daqiao.repository.TaskRecordRepository;
 import org.daqiao.repository.TaskStepRecordRepository;
 import org.daqiao.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -16,13 +17,14 @@ import java.util.List;
  * @Time : 21:52
  * @Description : TODO
  */
+@Component
 public class TaskServiceImpl implements TaskService {
 
     @Autowired
     private TaskRecordRepository taskRecordRepository;
 
     @Autowired
-    public TaskStepRecordRepository taskStepRecordRepository;
+    private TaskStepRecordRepository taskStepRecordRepository;
 
     @Override
     public TaskRecordWithSteps getTaskInfo(String taskId) {

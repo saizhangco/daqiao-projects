@@ -4,6 +4,7 @@ import org.daqiao.taskflow.StepResult;
 import org.daqiao.taskflow.TaskSession;
 import org.daqiao.taskflow.TaskStepMethod;
 import org.daqiao.taskflow.TaskStepSet;
+import org.springframework.stereotype.Component;
 
 /**
  * @Author : saizhang
@@ -11,6 +12,7 @@ import org.daqiao.taskflow.TaskStepSet;
  * @Time : 18:44
  * @Description : TODO
  */
+@Component
 public class MyTask implements TaskStepSet {
 
     @TaskStepMethod
