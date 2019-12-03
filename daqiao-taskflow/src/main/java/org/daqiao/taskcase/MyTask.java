@@ -11,8 +11,7 @@ import org.daqiao.taskflow.TaskStepSet;
  * @Time : 18:44
  * @Description : TODO
  */
-@TaskStepSet
-public class MyTask {
+public class MyTask implements TaskStepSet {
 
     @TaskStepMethod
     public StepResult step1(TaskSession session) {

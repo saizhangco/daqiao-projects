@@ -23,7 +23,7 @@ import java.util.UUID;
 @Component
 @Scope("prototype")
 public class Task {
-  private List<String> stepList = new ArrayList<>();
+
   private TaskSession session = new TaskSession();
   private String taskId = UUID.randomUUID().toString();
   private boolean allowAddTask = true;
@@ -33,7 +33,7 @@ public class Task {
 
   public void addTask(String step) {
       if (allowAddTask) {
-          stepList.add(step);
+          session.addStep(step);
       } else {
           throw new RuntimeException("[" + taskId + "] not allow add task step[" + step + "].");
       }
@@ -53,15 +53,16 @@ public class Task {
       Date startTime = new Date();
       taskRecord.setTaskStartTime(startTime);
       taskRecord.setTaskTimeInterval(0L);
-      taskRecord.setTaskStepSize(stepList.size());
+      taskRecord.setTaskStepSize(session.getStepList().size());
       // 将task的初始化信息保存到数据库
       taskRepository.taskInitial(taskRecord);
 
-      int stepCounter = 0;
+
       boolean taskResult = true;
       StopWatch stopWatch = new StopWatch();
       stopWatch.start();
-      for (String step : stepList) {
+      while (session.isContinue()) {
+          String step = session.getStepList().get(session.getStepCounter());
           Object object = taskRepository.getClass(step);
           Method method = taskRepository.getMethod(step);
           StepResult result;
@@ -83,7 +84,7 @@ public class Task {
           TaskStepRecord stepRecord = new TaskStepRecord();
           stepRecord.setId(null);
           stepRecord.setTaskId(taskId);
-          stepRecord.setStepNo(++stepCounter);
+          stepRecord.setStepNo(session.getStepCounter() + 1);
           stepRecord.setStepName(result.getStepName());
           stepRecord.setStepResult(result.getStepResult());
           // 插入数据库
@@ -92,6 +93,7 @@ public class Task {
               taskResult = false;
               break;
           }
+          session.incrementCounter();
       }
       stopWatch.stop();
       // 更新task数据保存的信息，通过taskId
