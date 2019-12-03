@@ -1,3 +1,6 @@
+server:
+  servlet:
+    context-path: /task
 spring:
   datasource:
     platform: mysql
